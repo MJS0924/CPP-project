@@ -141,9 +141,9 @@ void system::sel_question()
 {
     std::cout   << "score 100: "
                 << question_valid[0]; << question_valid[1] << question_valid[2] << std::endl;
-    std::cout   << "score 200: "
-                << question_valid[3]; << question_valid[4] << question_valid[5] << std::endl;
     std::cout   << "score 300: "
+                << question_valid[3]; << question_valid[4] << question_valid[5] << std::endl;
+    std::cout   << "score 500: "
                 << question_valid[6]; << question_valid[7] << question_valid[8] << std::endl;
                 
     int ans = -1;
@@ -160,6 +160,7 @@ void system::player_answer()     //플레이어 정답 입력받기, 플레이�
 {
     int n;
     while(1) {
+        std::cout << *(q[cur_q]).getBody() << std::endl;
         std::string ans;
         std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
         cin << n;
@@ -217,6 +218,6 @@ void system::round()
     } while(some_valid)
 
     //정답 인쇄
-    
+    std::cout << *(q[i]).getAnswer() << std::endl;
     return;
 }
