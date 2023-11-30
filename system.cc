@@ -1,12 +1,13 @@
 #include "system.h"
+using json = nlohmann::json;
 
 system::system()
 {
     std::cout << "How many players are there? :";
     std::cin >> player_cnt;
     
-    players = new Player::Player[player_cnt];
-    for(int i=1; i<=num; i++){
+    players = new Player[player_cnt];
+    for(int i=1; i<=player_cnt; i++){
         std::string name;
         std::cout << "Please enter nickname of player" << i << ": ";
         std::cin >> name;
@@ -15,10 +16,10 @@ system::system()
         players[i].score = 0;
     }
 
-    int *player_valid = new int[num];
+    int *player_valid = new int[player_cnt];
 
     for(int i=0; i<10; i++){
-        q[i] = new Question::Question;
+        q[i] = new Question;
         question_type[i] = 0;
     }
 }
@@ -82,12 +83,18 @@ void system::make_question()
             continue;
     }
 
-    for (size_t i = 0; i < answers.size(); ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         q[i]->body = qu[i];
         q[i]->answer = real[i];
 
-        if(question_type[i])
-            q[i]->fakeAnswer = fake[i];
+        if(question_type[i]){
+            Question* A;
+            QuestionWithFakeAnswer* B;
+            A = q[i];
+            B = static_cast<QuestionWithFakeAnswer *>(A);
+            B->fakeAnswer = fake[i];
+        }
+            
     }
 
     for (int i=0; i<10; i++){
@@ -154,10 +161,10 @@ void system::player_answer()     //플레이어 정답 입력받기, 플레이�
 {
     int n;
     while(1) {
-        std::cout << *(q[cur_q]).getBody() << std::endl;
+        std::cout << q[cur_q]->getBody() << std::endl;
         std::string ans;
         std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
-        cin << n;
+        std::cin >> n;
 
         if(n>=0 && n<player_cnt && player_valid[n])
             break;
@@ -167,8 +174,7 @@ void system::player_answer()     //플레이어 정답 입력받기, 플레이�
     player_valid[n] = 0;
 
     std::cout << "ans: ";
-    std::cin >> ans;
-    this->cur_ans = ans;
+    std::cin >> cur_ans;
     return;
 }
 
@@ -177,17 +183,20 @@ int system::doubt()     //의심 성공 여부 리턴
     if(!question_type[this->cur_q])
         return 0;
 
-    QuestionWithFakeAnswer::QuestionWithFakeAnswer current = *(q + this->cur_q);
-    return current.determineReal(&cur_ans);
+    Question* A;
+    QuestionWithFakeAnswer* B;
+    A = q[cur_q];
+    B = static_cast<QuestionWithFakeAnswer *>(A);
+    return B->determineReal(cur_ans);
 }
 
 void system::round()
 {
     int some_valid = 1;
     do {
-        int player_num = system::player_answer();
-        if(cur_question.determine(&cur_ans)){
-            players[player_num].addScore(q[cur_q]->score);
+        player_answer();
+        if(q[cur_q]->determine(cur_ans)){
+            players[cur_player].addScore(q[cur_q]->score);
             return;
         }
 
@@ -209,9 +218,9 @@ void system::round()
         for(int i=0; i<this->player_cnt; i++)
             some_valid |= player_valid[i];
 
-    } while(some_valid)
+    } while(some_valid);
 
     //정답 인쇄
-    std::cout << *(q[i]).getAnswer() << std::endl;
+    std::cout << q[cur_q]->getAnswer() << std::endl;
     return;
 }

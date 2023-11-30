@@ -17,14 +17,14 @@ class system
 
         void player_answer();           //player inputs answer
         int doubt();                    //return whether doubt success
-        void system::round();
+        void round();
 
     private:
         int player_cnt;
-        Player::Player *players;
+        Player *players;
         int *player_valid;
 
-        Question::Question *q[10];
+        Question *q[10];
         int question_valid[9];
         int question_type[10];      //0: ordinary, 1: doubt
 
