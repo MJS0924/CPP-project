@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/00-showcase.dir/00-showcase.cpp.o -o 00-showcase  -lcurl 

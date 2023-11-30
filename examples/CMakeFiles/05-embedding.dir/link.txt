@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/05-embedding.dir/05-embedding.cpp.o -o 05-embedding  -lcurl 

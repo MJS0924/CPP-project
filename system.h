@@ -16,6 +16,7 @@ class system
         int sel_question();             //player selects question to answer    
         std::string player_answer();
         int check_ans(std::string ans);
+        void doubt();
 
     private:
         int num;

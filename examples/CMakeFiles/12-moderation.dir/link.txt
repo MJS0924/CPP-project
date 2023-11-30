@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/12-moderation.dir/12-moderation.cpp.o -o 12-moderation  -lcurl 

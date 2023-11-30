@@ -30,48 +30,70 @@ void system::make_question()
 {
     json jsonObj;
 
-    for(int i=0; i<10; i++){
-        jsonObj["model"] = "gpt-3.5-turbo";
-        json messageObj;
-        messageObj["role"] = "user";
-        std::string content = "When the difficulty level is 0 to 10, give me a question in Jeopardy style corresponding to difficulty"
-        
-        if(i < 3)
-            content += "3";
-        else if(i < 6)
-            content += "5";
-        else if(i < 9)
-            content += "9";
+    jsonObj["model"] = "gpt-3.5-turbo";
+    json messageObj;
+    messageObj["role"] = "user";
+    std::string content = "Give me 10 questions in Jeopardy style. Please give me answer and fake answer";
+    messageObj["content"] = content;
+    std::cout << content << std::endl;
+    jsonObj["messages"].push_back(messageObj);
+    jsonObj["max_tokens"] = 500;
+    jsonObj["temperature"] = 0;
+
+    std::cout << "question making.." << std::endl;
+    auto chat1 = openai::chat().create(jsonObj);
+    std::cout << "question making complete" << std::endl;
+
+    json data = json::parse(chat1.dump(2));
+    std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
+    std::cout << ans << std::endl;
+    
+    std::istringstream iss(ans);
+    std::vector<std::string> cat;
+    std::vector<std::string> qu;
+    std::vector<std::string> real;
+    std::vector<std::string> fake;
+    
+    std::string line;
+
+    while (std::getline(iss, line)) {
+        if (line.find("Category:") != std::string::npos) {
+            cat.push_back(line.substr(line.find(":") + 2));
+            std::cout << "cat" << line.substr(line.find(":") + 2) << std::endl;
+            continue;
+        } else if (line.find("Real Answer:") != std::string::npos) {
+            real.push_back(line.substr(line.find(":") + 2));
+            std::cout << "real" << line.substr(line.find(":") + 2) << std::endl;
+            continue;
+        } else if (line.find("Fake Answer:") != std::string::npos) {
+            fake.push_back(line.substr(line.find(":") + 2));
+            std::cout << "fake" << line.substr(line.find(":") + 2) << std::endl;
+            continue;
+        } else if (line.find("Answer:") != std::string::npos) {
+            qu.push_back(line.substr(line.find(":") + 2));
+            std::cout << "qu" << line.substr(line.find(":") + 2) << std::endl;
+            continue;
+        } else
+            continue;
+    }
+
+    for (size_t i = 0; i < answers.size(); ++i) {
+        q[i]->body = qu[i];
+        q[i]->answer = real[i];
+
+        if(question_type[i])
+        q[i]->fakeAnswer = fake[i];
+    }
+
+    for (int i=0; i<10; i++){
+        if(i<3)
+            q[i]->score = 100;
+        else if(i<6)
+            q[i]->score = 300;
+        else if(i<9)
+            q[i]->score = 500;
         else
-            content += "10";
-
-        content += ". Please give me the answer too. The category is ";
-        content += category;
-        messageObj["content"] = content;
-        jsonObj["messages"].push_back(messageObj);
-        jsonObj["max_tokens"] = 300;
-        jsonObj["temperature"] = 0;
-
-        auto chat1 = openai::chat().create(jsonObj);
-
-        std::cout << chat1.dump(2) << std::endl;
-
-        json data = json::parse(chat1.dump(2));
-        std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
-
-        std::size_t found = ans.find("Answer:");
-        if (found != std::string::npos) {
-            std::size_t endOfAnswer = ans.find("\n", found);
-            if (endOfAnswer != std::string::npos) {
-                std::string answerPart = ans.substr(found + 8, endOfAnswer - (found + 8));
-                std::cout << "Answer Part: " << answerPart << std::endl;
-            }
-        }
-        found = ans.find("Question:");
-        if (found != std::string::npos) {
-            std::string questionPart = ans.substr(found + 10);
-            std::cout << "Question Part: " << questionPart << std::endl;
-        }
+            q[i]->score = 1000;
     }
     return;
 }
@@ -101,6 +123,13 @@ void system::det_question_type()
     a = rand();
     if(a <= 25600)
         question_type[9] = 1;
+
+    for(int i=0; i<10; i++){
+        if(!question_type[i])
+            continue;
+
+
+    }
 }
 
 int system::sel_question()

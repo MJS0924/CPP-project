@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/06-file.dir/06-file.cpp.o -o 06-file  -lcurl 
