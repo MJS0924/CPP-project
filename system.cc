@@ -159,7 +159,7 @@ void system::sel_question()
 void system::player_answer()     //플레이어 정답 입력받기, 플레이어 번호 리턴
 {
     int n;
-    for(int i=0; i<this->player_cnt; i++) {
+    while(1) {
         std::string ans;
         std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
         cin << n;
@@ -188,21 +188,35 @@ int system::doubt()     //의심 성공 여부 리턴
 
 void system::round()
 {
-    int player_num = system::player_answer();
-    if(cur_question.determine(&cur_ans)){
-        players[player_num].incrementScore(cur_question.score);
-    }
-
-    char dbt;
-    std::cout << "Do you have any doubts about the outcome?(y/n): ";
-    std::cin >> dbt;
-    if(dbt == 'y') {
-        if(doubt()){
-
+    int some_valid = 1;
+    do {
+        int player_num = system::player_answer();
+        if(cur_question.determine(&cur_ans)){
+            players[player_num].incrementScore(cur_question.score);
+            return;
         }
 
-        else{
+        char dbt;
+        std::cout << "Do you have any doubts about the outcome?(y/n): ";
+        std::cin >> dbt;
+        if(dbt == 'y') {
+            if(doubt()){
+                players[this->cur_player].
+                return;
+            }
 
+            else{
+                players[this->cur_player].
+            }
         }
-    }
+
+        some_valid = 0;
+        for(int i=0; i<this->player_cnt; i++)
+            some_valid |= player_valid[i];
+
+    } while(some_valid)
+
+    //정답 인쇄
+    
+    return;
 }
