@@ -2,7 +2,7 @@
 
 system::system()
 {
-    std::cout << "How many player is there? :";
+    std::cout << "How many players are there? :";
     std::cin >> player_cnt;
     
     players = new Player::Player[player_cnt];
@@ -87,7 +87,7 @@ void system::make_question()
         q[i]->answer = real[i];
 
         if(question_type[i])
-        q[i]->fakeAnswer = fake[i];
+            q[i]->fakeAnswer = fake[i];
     }
 
     for (int i=0; i<10; i++){
@@ -129,26 +129,20 @@ void system::det_question_type()
     if(a <= 25600)
         question_type[9] = 1;
 
-    for(int i=0; i<10; i++){
-        if(!question_type[i])
-            continue;
-
-
-    }
 }
 
 void system::sel_question()
 {
     std::cout   << "score 100: "
-                << question_valid[0]; << question_valid[1] << question_valid[2] << std::endl;
+                << question_valid[0] << question_valid[1] << question_valid[2] << std::endl;
     std::cout   << "score 300: "
-                << question_valid[3]; << question_valid[4] << question_valid[5] << std::endl;
+                << question_valid[3] << question_valid[4] << question_valid[5] << std::endl;
     std::cout   << "score 500: "
-                << question_valid[6]; << question_valid[7] << question_valid[8] << std::endl;
+                << question_valid[6] << question_valid[7] << question_valid[8] << std::endl;
                 
     int ans = -1;
     while(ans < 0 || ans >= 9 || !question_valid[ans]){
-        std::cout << "Please select available question(O is available question, X invalid): ";
+        std::cout << "Please select available question(1 is available question, 0 invalid): ";
         std::cin >> ans;
     }
     
@@ -156,7 +150,7 @@ void system::sel_question()
     return;
 }
 
-void system::player_answer()     //플레이어 정답 입력받기, 플레이어 번호 리턴
+void system::player_answer()     //플레이어 정답 입력받기, 플레이어 번호
 {
     int n;
     while(1) {
@@ -165,7 +159,7 @@ void system::player_answer()     //플레이어 정답 입력받기, 플레이�
         std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
         cin << n;
 
-        if(player_valid[n])
+        if(n>=0 && n<player_cnt && player_valid[n])
             break;
         players[n].incrementViolationCount();
     }
@@ -193,7 +187,7 @@ void system::round()
     do {
         int player_num = system::player_answer();
         if(cur_question.determine(&cur_ans)){
-            players[player_num].incrementScore(cur_question.score);
+            players[player_num].addScore(q[cur_q]->score);
             return;
         }
 
@@ -202,12 +196,12 @@ void system::round()
         std::cin >> dbt;
         if(dbt == 'y') {
             if(doubt()){
-                players[this->cur_player].
+                players[this->cur_player].addScore(q[cur_q]->score*2);
                 return;
             }
 
             else{
-                players[this->cur_player].
+                players[this->cur_player].addScore(-q[cur_q]->score);
             }
         }
 
