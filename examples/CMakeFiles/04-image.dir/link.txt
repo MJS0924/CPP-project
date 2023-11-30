@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/04-image.dir/04-image.cpp.o -o 04-image  -lcurl 

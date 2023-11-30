@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/01-model.dir/01-model.cpp.o -o 01-model  -lcurl 

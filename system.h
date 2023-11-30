@@ -11,12 +11,11 @@ class system
         system();
         ~system();
 
-        void make_question();
-        void det_question_type();        //select the question_type
+        void make_question();           //make question
+        void det_question_type();       //select the question_type
         int sel_question();             //player selects question to answer    
-        std::string player_answer();
-        int check_ans(std::string ans);
-        void doubt();
+        std::string player_answer();    //player inputs answer
+        int doubt();                    //return whether doubt success
 
     private:
         int num;
@@ -28,5 +27,5 @@ class system
         int question_valid[9];
         int question_type[10];      //0: ordinary, 1: doubt
 
-        question::question cur_q;
+        int cur_q;
 };

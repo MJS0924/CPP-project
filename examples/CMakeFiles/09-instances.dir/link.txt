@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/09-instances.dir/09-instances.cpp.o -o 09-instances  -lcurl 

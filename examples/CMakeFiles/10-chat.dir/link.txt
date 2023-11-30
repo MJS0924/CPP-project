@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/10-chat.dir/10-chat.cpp.o -o 10-chat  -lcurl 

@@ -163,30 +163,11 @@ std::string system::player_answer()
     return ans;
 }
 
-int system::check_ans(int q_num, std::string ans)
+int system::doubt()
 {
-    json jsonObj;
+    if(!question_type[cur_q])
+        return 0;
 
-    std::string content = "Rate the similarity between the answers to the following two questions on a scale of 0 to 10. Provide the answer in numerical form only. 1. ";
-    content = content + ans;
-    content = content + " 2. ";
-    content = content + "Who is Albert Einstein?";
-
-    jsonObj["model"] = "gpt-3.5-turbo";
-    json messageObj;
-    messageObj["role"] = "user";
-    messageObj["content"] = content;
-    jsonObj["messages"].push_back(messageObj);
-    jsonObj["max_tokens"] = 10;
-    jsonObj["temperature"] = 0;
-
-    auto chat1 = openai::chat().create(jsonObj);
-
-    std::cout << chat1.dump(2) << std::endl;
-
-    json data = json::parse(chat1.dump(2));
-    std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
-    std::cout << ans << std::endl;
-
-    return std::stoi(ans);
+    QuestionWithFakeAnswer::QuestionWithFakeAnswer current = *(q + cur_q);
+    return current.determineReal(&ans);
 }
