@@ -12,6 +12,10 @@ system::system()
         q[i] = new question::question;
         question_type[i] = 0;
     }
+
+    cout << "Please enter the desired topic(e.g math, history): ";
+    cin >> category;
+
 }
 
 system::~system()
@@ -24,46 +28,51 @@ system::~system()
 
 void system::make_question()
 {
-    auto chat1 = openai::chat().create(R"(
-        {
-        "model": "gpt-3.5-turbo",
-        "messages":[{"role":"user", "content":"When the difficulty level is 0 to 10, give me 3 question in Jeopardy style corresponding to 3"}],
-        "max_tokens": 300,
-        "temperature": 0
-    }
-    )"_json);
-    std::string dif_3 = chat1.dump(2);
+    json jsonObj;
 
-    chat1 = openai::chat().create(R"(
-        {
-        "model": "gpt-3.5-turbo",
-        "messages":[{"role":"user", "content":"When the difficulty level is 0 to 10, give me 3 question in Jeopardy style corresponding to 5"}],
-        "max_tokens": 300,
-        "temperature": 0
-    }
-    )"_json);
-    std::string dif_6 = chat1.dump(2);
+    for(int i=0; i<10; i++){
+        jsonObj["model"] = "gpt-3.5-turbo";
+        json messageObj;
+        messageObj["role"] = "user";
+        std::string content = "When the difficulty level is 0 to 10, give me a question in Jeopardy style corresponding to difficulty"
+        
+        if(i < 3)
+            content += "3";
+        else if(i < 6)
+            content += "5";
+        else if(i < 9)
+            content += "9";
+        else
+            content += "10";
 
-    chat1 = openai::chat().create(R"(
-        {
-        "model": "gpt-3.5-turbo",
-        "messages":[{"role":"user", "content":"When the difficulty level is 0 to 10, give me 3 question in Jeopardy style corresponding to 7"}],
-        "max_tokens": 300,
-        "temperature": 0
-    }
-    )"_json);
-    std::string dif_9 = chat1.dump(2);
+        content += ". Please give me the answer too. The category is ";
+        content += category;
+        messageObj["content"] = content;
+        jsonObj["messages"].push_back(messageObj);
+        jsonObj["max_tokens"] = 300;
+        jsonObj["temperature"] = 0;
 
-    chat1 = openai::chat().create(R"(
-        {
-        "model": "gpt-3.5-turbo",
-        "messages":[{"role":"user", "content":"When the difficulty level is 0 to 10, give me 3 question in Jeopardy style corresponding to 10"}],
-        "max_tokens": 300,
-        "temperature": 0
-    }
-    )"_json);
-    std::string dif_10 = chat1.dump(2);
+        auto chat1 = openai::chat().create(jsonObj);
 
+        std::cout << chat1.dump(2) << std::endl;
+
+        json data = json::parse(chat1.dump(2));
+        std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
+
+        std::size_t found = ans.find("Answer:");
+        if (found != std::string::npos) {
+            std::size_t endOfAnswer = ans.find("\n", found);
+            if (endOfAnswer != std::string::npos) {
+                std::string answerPart = ans.substr(found + 8, endOfAnswer - (found + 8));
+                std::cout << "Answer Part: " << answerPart << std::endl;
+            }
+        }
+        found = ans.find("Question:");
+        if (found != std::string::npos) {
+            std::string questionPart = ans.substr(found + 10);
+            std::cout << "Question Part: " << questionPart << std::endl;
+        }
+    }
     return;
 }
 
@@ -102,10 +111,13 @@ int system::sel_question()
                 << question_valid[3]; << question_valid[4] << question_valid[5] << std::endl;
     std::cout   << "score 300: "
                 << question_valid[6]; << question_valid[7] << question_valid[8] << std::endl;
+                
+    int ans = -1;
+    while(ans < 0 || ans >= 9 || !question_valid[ans]){
+        std::cout << "Please select available question(O is available question, X invalid): ";
+        std::cin >> ans;
+    }
     
-    std::cout << "Please select a question(O is available question, X invalid).: ";
-    int ans;
-    std::cin >> ans;
     return ans;
 }
 
@@ -119,11 +131,33 @@ std::string system::player_answer()
     std::cout << "ans: ";
     std::cin >> ans;
     player_valid[n] = 0;
-
     return ans;
 }
 
-int system::check_ans(std::string ans)
+int system::check_ans(int q_num, std::string ans)
 {
+    json jsonObj;
 
+    std::string content = "Rate the similarity between the answers to the following two questions on a scale of 0 to 10. Provide the answer in numerical form only. 1. ";
+    content = content + ans;
+    content = content + " 2. ";
+    content = content + "Who is Albert Einstein?";
+
+    jsonObj["model"] = "gpt-3.5-turbo";
+    json messageObj;
+    messageObj["role"] = "user";
+    messageObj["content"] = content;
+    jsonObj["messages"].push_back(messageObj);
+    jsonObj["max_tokens"] = 10;
+    jsonObj["temperature"] = 0;
+
+    auto chat1 = openai::chat().create(jsonObj);
+
+    std::cout << chat1.dump(2) << std::endl;
+
+    json data = json::parse(chat1.dump(2));
+    std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
+    std::cout << ans << std::endl;
+
+    return std::stoi(ans);
 }

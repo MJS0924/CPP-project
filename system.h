@@ -22,7 +22,10 @@ class system
         player::player *players;
         int *player_valid;
 
+        std::string category;
         question::question *q[10];
         int question_valid[9];
         int question_type[10];      //0: ordinary, 1: doubt
+
+        question::question cur_q;
 };
