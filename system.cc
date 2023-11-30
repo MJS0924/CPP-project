@@ -2,20 +2,25 @@
 
 system::system()
 {
-    cout << "How many player is there? :";
-    cin >> num;
+    std::cout << "How many player is there? :";
+    std::cin >> player_cnt;
     
-    players = new player::player[num];
-    player_valid = new int[num];
+    players = new Player::Player[player_cnt];
+    for(int i=1; i<=num; i++){
+        std::string name;
+        std::cout << "Please enter nickname of player" << i << ": ";
+        std::cin >> name;
 
-    for(int i=0; i<10; i++){
-        q[i] = new question::question;
-        question_type[i] = 0;
+        players[i].nickname = name;
+        players[i].score = 0;
     }
 
-    cout << "Please enter the desired topic(e.g math, history): ";
-    cin >> category;
+    int *player_valid = new int[num];
 
+    for(int i=0; i<10; i++){
+        q[i] = new Question::Question;
+        question_type[i] = 0;
+    }
 }
 
 system::~system()
@@ -132,7 +137,7 @@ void system::det_question_type()
     }
 }
 
-int system::sel_question()
+void system::sel_question()
 {
     std::cout   << "score 100: "
                 << question_valid[0]; << question_valid[1] << question_valid[2] << std::endl;
@@ -147,27 +152,57 @@ int system::sel_question()
         std::cin >> ans;
     }
     
-    return ans;
+    this->cur_ans = ans;
+    return;
 }
 
-std::string system::player_answer()
+void system::player_answer()     //플레이어 정답 입력받기, 플레이어 번호 리턴
 {
     int n;
-    std::string ans;
-    std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
-    cin << n;
+    for(int i=0; i<this->player_cnt; i++) {
+        std::string ans;
+        std::cout << "PRESS YOUR BUZZER!!!" << std::endl;
+        cin << n;
+
+        if(player_valid[n])
+            break;
+        players[n].incrementViolationCount();
+    }
+    this->cur_player = n;
+    player_valid[n] = 0;
 
     std::cout << "ans: ";
     std::cin >> ans;
-    player_valid[n] = 0;
-    return ans;
+    this->cur_ans = ans;
+    return;
 }
 
-int system::doubt()
+int system::doubt()     //의심 성공 여부 리턴
 {
-    if(!question_type[cur_q])
+    if(!question_type[this->cur_q])
         return 0;
 
-    QuestionWithFakeAnswer::QuestionWithFakeAnswer current = *(q + cur_q);
-    return current.determineReal(&ans);
+    QuestionWithFakeAnswer::QuestionWithFakeAnswer current = *(q + this->cur_q);
+    return current.determineReal(&cur_ans);
+}
+
+void system::round()
+{
+    int player_num = system::player_answer();
+    if(cur_question.determine(&cur_ans)){
+        players[player_num].incrementScore(cur_question.score);
+    }
+
+    char dbt;
+    std::cout << "Do you have any doubts about the outcome?(y/n): ";
+    std::cin >> dbt;
+    if(dbt == 'y') {
+        if(doubt()){
+
+        }
+
+        else{
+
+        }
+    }
 }
