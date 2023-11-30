@@ -10,8 +10,8 @@ Question::Question(const std::string& body, const std::string& answer, int score
 
 Question::~Question() {}
 
-void Question::display() const {
-    std::cout << "Answer: " << answer << std::endl;
+const std::string& Question::getBody() const {
+    return body;
 }
 
 const std::string& Question::getAnswer() const {
@@ -46,10 +46,6 @@ QuestionWithFakeAnswer::QuestionWithFakeAnswer(const std::string& body, const st
     : Question(body, answer, score), fakeAnswer_(fakeAnswer) {}
 
 QuestionWithFakeAnswer::~QuestionWithFakeAnswer() {}
-
-void QuestionWithFakeAnswer::display() const {
-    std::cout << "Answer: " << fakeAnswer << std::endl;
-}
 
 const std::string& QuestionWithFakeAnswer::getAnswer() const {
     return fakeAnswer;

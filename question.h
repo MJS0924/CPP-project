@@ -8,7 +8,7 @@ public:
     Question(const std::string& body, const std::string& answer, int score);
     ~Question();
 
-    virtual void display() const;
+    const std::string& getBody() const;
     virtual const std::string& getAnswer() const;
     virtual bool determine(const std::string& userAnswer) const;
 
@@ -23,7 +23,6 @@ public:
     QuestionWithFakeAnswer(const std::string& body, const std::string& answer, int score, const std::string& fakeAnswer);
     ~QuestionWithFakeAnswer();
 
-    void display() const override;
     const std::string& getAnswer() const override;
     bool determine(const std::string& userAnswer) const override;
 
