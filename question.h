@@ -6,11 +6,14 @@
 class Question {
 public:
     Question(const std::string& body, const std::string& answer, int score);
+    Question() {};
     ~Question();
 
     const std::string& getBody() const;
     virtual const std::string& getAnswer() const;
-    virtual bool determine(const std::string& userAnswer) const;
+    virtual bool determine(std::string& userAnswer) const;
+
+    friend class system;
 
 private:
     std::string body;
@@ -24,11 +27,14 @@ public:
     ~QuestionWithFakeAnswer();
 
     const std::string& getAnswer() const override;
-    bool determine(const std::string& userAnswer) const override;
+    bool determine(std::string& userAnswer) const override;
 
-    void displayReal() const override;
-    const std::string& getRealAnswer() const override;
-    bool determineReal(const std::string& userAnswer) const override;
+    void displayReal() const;
+    const std::string& getRealAnswer() const;
+    bool determineReal(std::string& userAnswer) const;
+
+    friend class system;
+
 private:
     std::string fakeAnswer;
 };

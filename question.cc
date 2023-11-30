@@ -18,7 +18,7 @@ const std::string& Question::getAnswer() const {
     return answer;
 }
 
-int Question::determine(const std::string& userAnswer) const {
+int Question::determine(std::string& userAnswer) const {
     json jsonObj;
     jsonObj["model"] = "gpt-3.5-turbo";
 
@@ -83,7 +83,7 @@ const std::string& QuestionWithFakeAnswer::getRealAnswer() const {
     return answer;
 }
 
-bool QuestionWithFakeAnswer::determineReal(const std::string& userAnswer) const {
+bool QuestionWithFakeAnswer::determineReal(std::string& userAnswer) const {
     json jsonObj;
     jsonObj["model"] = "gpt-3.5-turbo";
 

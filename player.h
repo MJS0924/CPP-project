@@ -6,6 +6,7 @@
 class Player {
 public:
     Player(const std::string& nickname, int score);
+    Player() {};
     ~Player();
 
     void display() const;
@@ -15,10 +16,14 @@ public:
     void incrementViolationCount();
     void addScore(int n);
 
+    friend class system;
+
 private:
     std::string nickname;
     int score;
     int violationCount;
+
+    
 };
 
 #endif // PLAYER_H
