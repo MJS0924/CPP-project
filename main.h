@@ -1,13 +1,11 @@
 #include <random>
 #include <iostream>
 #include <ctime>
-#include <string>
 #include "openai.hpp"
 
 class Question {
 public:
-    Question(const std::string& body, const std::string& answer, int score);
-    Question() {};
+    Question();
     ~Question();
 
     const std::string& getBody() const;
@@ -24,14 +22,12 @@ protected:
 
 class QuestionWithFakeAnswer : public Question {
 public:
-    QuestionWithFakeAnswer(const std::string& body, const std::string& answer, int score, const std::string& fakeAnswer);
-    QuestionWithFakeAnswer() {};
+    QuestionWithFakeAnswer();
     ~QuestionWithFakeAnswer();
 
     const std::string& getAnswer() const override;
     bool determine(std::string& userAnswer) const override;
 
-    void displayReal() const;
     const std::string& getRealAnswer() const;
     bool determineReal(std::string& userAnswer) const;
 
@@ -43,22 +39,14 @@ private:
 
 class Player {
 public:
-    Player(const std::string& nickname, int score);
-    Player() {
-        score = 0;
-        violationCount = 0;
-    };
+    Player();
     ~Player();
 
-    void display() const;
     const std::string& getNickname() const;
     void setNickname(std::string name){
         nickname = name;
     }
     int getScore() const;
-    void setScore(int n){
-        score = n;
-    }
     int getViolationCount() const;
     void incrementViolationCount();
     void addScore(int n);

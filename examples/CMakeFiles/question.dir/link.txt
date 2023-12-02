@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/question.dir/question.cc.o -o question  -lcurl 

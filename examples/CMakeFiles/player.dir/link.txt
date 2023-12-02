@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/player.dir/player.cc.o -o player  -lcurl 

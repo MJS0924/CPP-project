@@ -2,11 +2,7 @@
 using json = nlohmann::json;
 
 //question
-using json = nlohmann::json;
-
-Question::Question(const std::string& body, const std::string& answer, int score)
-    : body(body), answer(answer), score(score) {}
-
+Question::Question() {}
 Question::~Question() {}
 
 const std::string& Question::getBody() const {
@@ -41,9 +37,7 @@ bool Question::determine(std::string& userAnswer) const {
     return true;
 }
 
-QuestionWithFakeAnswer::QuestionWithFakeAnswer(const std::string& body, const std::string& answer, int score, const std::string& fakeAnswer)
-    : Question(body, answer, score), fakeAnswer(fakeAnswer) {}
-
+QuestionWithFakeAnswer::QuestionWithFakeAnswer() {}
 QuestionWithFakeAnswer::~QuestionWithFakeAnswer() {}
 
 const std::string& QuestionWithFakeAnswer::getAnswer() const {
@@ -72,10 +66,6 @@ bool QuestionWithFakeAnswer::determine(std::string& userAnswer) const {
     int similarity = std::stoi(similarityScoreStr);
     if(similarity < 9) return false;
     return true;
-}
-
-void QuestionWithFakeAnswer::displayReal() const {
-    std::cout << "Answer: " << answer << std::endl;
 }
 
 const std::string& QuestionWithFakeAnswer::getRealAnswer() const {
@@ -107,18 +97,13 @@ bool QuestionWithFakeAnswer::determineReal(std::string& userAnswer) const {
 }
 
 //player
-Player::Player(const std::string& nickname, int score)
-    : nickname(nickname), score(score), violationCount(0) {}
+Player::Player() 
+{
+    score = 0;
+    violationCount = 0;
+};
 
-Player::~Player() {
-    std::cout << "Player destructor called" << std::endl;
-}
-
-void Player::display() const {
-    std::cout << "Nickname: " << nickname << std::endl;
-    std::cout << "Score: " << score << std::endl;
-    std::cout << "Violation Count: " << violationCount << std::endl;
-}
+Player::~Player() {}
 
 const std::string& Player::getNickname() const {
     return nickname;
@@ -144,7 +129,7 @@ void Player::addScore(int n){
     score += n;
 }
 
-//system=========================================================================
+//system
 System::System()
 {
     std::cout << "How many players are there? :";
@@ -161,6 +146,10 @@ System::System()
     }
 
     player_valid = new int[player_cnt];
+
+    for(int i=0; i<10; i++){
+        question_type[i] = 0;
+    }
 }
 
 System::~System()
@@ -532,7 +521,6 @@ void System::printScores()
 
         if(max < players[i].getScore())
             max = players[i].getScore();
-        std::cout << max << std::endl;
     }
 
     for(int i=0; i<player_cnt; i++){
@@ -540,13 +528,13 @@ void System::printScores()
             num.push_back(i);
     }
 
-    std::cout << "The first place is.." << std::endl;
+    std::cout << std::endl << "The first place is.." << std::endl;
     for(unsigned int i=0; i<num.size(); i++){
         std::cout << players[ num[i] ].getNickname();
         if(i != num.size()-1)
             std::cout << ", ";
     }
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
     return;
 }
 
