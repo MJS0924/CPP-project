@@ -121,7 +121,7 @@ void Player::incrementViolationCount() {
     ++violationCount;
     if(violationCount >= 3){
         score -= 100;
-        std::cout << nickname << ", Your violation count is " << violationCount << ". You lose 100 points (╯°益°)╯彡" << std::endl;
+        std::cout << "\033[1;33m" << nickname << "\033[1;0m" << ", Your violation count is " << "\033[1;31m" << violationCount << "\033[1;0m" << ". You lose 100 points (╯°益°)╯彡" << std::endl;
     }
 }
 
@@ -177,7 +177,7 @@ void System::make_question()
 
     std::cout << "Question making.. Please wait a sec" << std::endl;
     auto chat1 = openai::chat().create(jsonObj);
-    std::cout << "question making complete!" << std::endl << std::endl;
+    std::cout << "Question making complete!" << std::endl << std::endl;
 
     json data = json::parse(chat1.dump(2));
     std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
@@ -351,7 +351,7 @@ void System::sel_question()
 void System::player_answer()     //플레이어 정답 입력받기, 플레이어 번호
 {
     int n;
-    std::cout << "Question is...\n\t" << q[cur_q]->getBody() << std::endl;
+    std::cout << "Question is...\n    " << q[cur_q]->getBody() << std::endl;
     std::string ans;
     while(1) {
         std::cout << "PRESS YOUR BUZZER!!!: ";
@@ -375,7 +375,7 @@ void System::player_answer()     //플레이어 정답 입력받기, 플레이�
     this->cur_player = n-1;
     player_valid[n-1] = 0;
 
-    std::cout << players[cur_player].getNickname() << ": ";
+    std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << ": ";
     std::getline(std::cin, cur_ans);
 
     return;
@@ -400,15 +400,15 @@ void System::round()
         player_answer();
         if(q[cur_q]->determine(cur_ans)){
             players[cur_player].addScore(q[cur_q]->score);
-            std::cout << "\nCorrect!!" << std::endl;
-            std::cout << players[cur_player].getNickname() << " gets " << q[cur_q]->score << " points." << std::endl << std::endl;
+            std::cout << "\033[1;32m" << "\nCorrect!!" << "\033[1;0m" << std::endl;
+            std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " gets " << q[cur_q]->score << " points." << std::endl << std::endl;
             if(question_type[cur_q])
                 std::cout << "You were lucky this time." << std::endl << std::endl;
             return;
         }
 
         char dbt;
-        std::cout << "\nWrong!!" << std::endl;
+        std::cout << "\033[1;31m" << "\nWrong!!" << "\033[1;0m" << std::endl;
         std::cout << "Do you have any doubts about the outcome?(y/n): ";
         std::cin >> dbt;
         getchar();
@@ -416,15 +416,15 @@ void System::round()
         if(dbt == 'y') {
             if(doubt()){
                 players[this->cur_player].addScore(q[cur_q]->score*2);
-                std::cout << "doubt success!!\n";
-                std::cout << players[cur_player].getNickname() << " gets " << 2 * q[cur_q]->score << " points." << std::endl << std::endl;
+                std::cout << "\033[1;32m" << "doubt success!!\n" << "\033[1;0m" ;
+                std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " gets " << 2 * q[cur_q]->score << " points." << std::endl << std::endl;
                 return;
             }
 
             else{
                 players[this->cur_player].addScore(-q[cur_q]->score);
-                std::cout << "doubt failed!!\n";
-                std::cout << players[cur_player].getNickname() << " loses " << q[cur_q]->score << " points." << std::endl << std::endl;
+                std::cout << "\033[1;31m" << "doubt failed!!\n" << "\033[1;0m" ;
+                std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " loses " << q[cur_q]->score << " points." << std::endl << std::endl;
             }
         }
 
@@ -439,11 +439,11 @@ void System::round()
         Question *A = q[cur_q];
         QuestionWithFakeAnswer *B;
         B = static_cast<QuestionWithFakeAnswer *>(A);
-        std::cout << "The answer is.." << B->getAnswer() << std::endl;
+        std::cout << "The answer is... " << B->getAnswer() << std::endl;
         std::cout << "Actually this answer is fake. Now, no one knows the real answer ¯_(ツ)_/¯" << std::endl << std::endl;
     }
     else{
-        std::cout << "The answer is.." << q[cur_q]->getAnswer() << std::endl << std::endl;
+        std::cout << "The answer is... " << q[cur_q]->getAnswer() << std::endl << std::endl;
     }
     return;
 }
@@ -457,13 +457,14 @@ void System::finalRound()
         player_answer();
         if(q[cur_q]->determine(cur_ans)){
             players[cur_player].addScore(q[cur_q]->score);
-            std::cout << players[cur_player].getNickname() << " gets " << q[cur_q]->score << " points." << std::endl << std::endl;
+            std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " gets " << q[cur_q]->score << " points." << std::endl << std::endl;
             if(question_type[cur_q])
                 std::cout << "You were lucky this time." << std::endl << std::endl;
             return;
         }
 
         char dbt;
+        std::cout << "\033[1;31m" << "\nWrong!!" << "\033[1;0m" << std::endl;
         std::cout << "Do you have any doubts about the outcome?(y/n): ";
         std::cin >> dbt;
         std::cout << std::endl << std::endl;
@@ -473,14 +474,14 @@ void System::finalRound()
             if(doubt()){
                 players[this->cur_player].addScore(q[cur_q]->score*2);
                 std::cout << "doubt success!!\n";
-                std::cout << players[cur_player].getNickname() << " gets " << 2 * q[cur_q]->score << "points." << std::endl << std::endl;
+                std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " gets " << 2 * q[cur_q]->score << "points." << std::endl << std::endl;
                 return;
             }
 
             else{
                 players[this->cur_player].addScore(-q[cur_q]->score);
                 std::cout << "doubt failed!!\n";
-                std::cout << players[cur_player].getNickname() << " loses " << q[cur_q]->score << "points." << std::endl << std::endl;
+                std::cout << "\033[1;33m" << players[cur_player].getNickname() << "\033[1;0m" << " loses " << q[cur_q]->score << "points." << std::endl << std::endl;
             }
         }
 
@@ -517,7 +518,7 @@ void System::printScores()
     std::vector<int> num;
 
     for(int i=0; i<player_cnt; i++){
-        std::cout << players[i].getNickname() << ": " << players[i].getScore() << std::endl;
+        std::cout << "\033[1;33m" << players[i].getNickname() << "\033[1;0m" << ": " << players[i].getScore() << std::endl;
 
         if(max < players[i].getScore())
             max = players[i].getScore();
@@ -528,9 +529,9 @@ void System::printScores()
             num.push_back(i);
     }
 
-    std::cout << std::endl << "The first place is.." << std::endl;
+    std::cout << std::endl << "The first place is..";
     for(unsigned int i=0; i<num.size(); i++){
-        std::cout << players[ num[i] ].getNickname();
+        std::cout << "\033[1;33m" << players[ num[i] ].getNickname() << "\033[1;0m" ;
         if(i != num.size()-1)
             std::cout << ", ";
     }
