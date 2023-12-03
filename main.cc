@@ -350,26 +350,33 @@ void System::sel_question()
 
 void System::player_answer()     //플레이어 정답 입력받기, 플레이어 번호
 {
+    std::string input;
     int n;
     std::cout << "Question is...\n    " << q[cur_q]->getBody() << std::endl;
     std::string ans;
-    while(1) {
+
+    while(1){
         std::cout << "PRESS YOUR BUZZER!!!: ";
-        std::cin >> n;
-        getchar();
+        getline(std::cin, input);
 
-        if(n>0 && n<=player_cnt){
-            if(player_valid[n-1])
-                break;
-            else{
-                std::cout << "You can't answer this question again.\n";
-                players[n-1].incrementViolationCount();
+        try {
+            n = std::stoi(input);
+
+            if (n > 0 && n <= player_cnt) {
+                if (player_valid[n - 1])
+                    break;
+                else {
+                    std::cout << "You can't answer this question again.\n";
+                    players[n - 1].incrementViolationCount();
+                }
+            } else {
+                std::cout << "Please input right player number.\n";
             }
-
-        }
-
-        else
+        } catch (const std::invalid_argument &e) {
+            std::cout << "Invalid input. Please enter a number.\n";
+        } catch (const std::out_of_range &e) {
             std::cout << "Please input right player number.\n";
+        }
     }
 
     this->cur_player = n-1;
