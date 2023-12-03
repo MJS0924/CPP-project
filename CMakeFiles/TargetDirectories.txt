@@ -1,8 +1,0 @@
-/home/mjs/openai-cpp/CPP-project/CMakeFiles/edit_cache.dir
-/home/mjs/openai-cpp/CPP-project/CMakeFiles/rebuild_cache.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/system.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/player.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/question.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/main.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/edit_cache.dir
-/home/mjs/openai-cpp/CPP-project/examples/CMakeFiles/rebuild_cache.dir
