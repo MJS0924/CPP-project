@@ -1,134 +1,6 @@
 #include "main.h"
 using json = nlohmann::json;
 
-//question
-Question::Question() {}
-Question::~Question() {}
-
-const std::string& Question::getBody() const {
-    return body;
-}
-
-const std::string& Question::getAnswer() const {
-    return answer;
-}
-
-bool Question::determine(std::string& userAnswer) const {
-    json jsonObj;
-    jsonObj["model"] = "gpt-3.5-turbo";
-
-    std::string content = "Rate the similarity between the answers to the following two questions on a scale of 0 to 10. Provide the answer in numerical form only. 1. ";
-    content += userAnswer + " 2. " + answer;
-
-    json messageObj;
-    messageObj["role"] = "user";
-    messageObj["content"] = content;
-    jsonObj["messages"].push_back(messageObj);
-
-    jsonObj["max_tokens"] = 10;
-    jsonObj["temperature"] = 0;
-
-    auto chatResponse = openai::chat().create(jsonObj);
-    json data = json::parse(chatResponse.dump(2));
-
-    std::string similarityScoreStr = data["choices"][0]["message"]["content"].get<std::string>();
-    int similarity = std::stoi(similarityScoreStr);
-    if(similarity < 9) return false;
-    return true;
-}
-
-QuestionWithFakeAnswer::QuestionWithFakeAnswer() {}
-QuestionWithFakeAnswer::~QuestionWithFakeAnswer() {}
-
-const std::string& QuestionWithFakeAnswer::getAnswer() const {
-    return fakeAnswer;
-}
-
-bool QuestionWithFakeAnswer::determine(std::string& userAnswer) const {
-    json jsonObj;
-    jsonObj["model"] = "gpt-3.5-turbo";
-
-    std::string content = "Rate the similarity between the answers to the following two questions on a scale of 0 to 10. Provide the answer in numerical form only. 1. ";
-    content += userAnswer + " 2. " + fakeAnswer;
-
-    json messageObj;
-    messageObj["role"] = "user";
-    messageObj["content"] = content;
-    jsonObj["messages"].push_back(messageObj);
-
-    jsonObj["max_tokens"] = 10;
-    jsonObj["temperature"] = 0;
-
-    auto chatResponse = openai::chat().create(jsonObj);
-    json data = json::parse(chatResponse.dump(2));
-
-    std::string similarityScoreStr = data["choices"][0]["message"]["content"].get<std::string>();
-    int similarity = std::stoi(similarityScoreStr);
-    if(similarity < 9) return false;
-    return true;
-}
-
-const std::string& QuestionWithFakeAnswer::getRealAnswer() const {
-    return answer;
-}
-
-bool QuestionWithFakeAnswer::determineReal(std::string& userAnswer) const {
-    json jsonObj;
-    jsonObj["model"] = "gpt-3.5-turbo";
-
-    std::string content = "Rate the similarity between the answers to the following two questions on a scale of 0 to 10. Provide the answer in numerical form only. 1. ";
-    content += userAnswer + " 2. " + answer;
-
-    json messageObj;
-    messageObj["role"] = "user";
-    messageObj["content"] = content;
-    jsonObj["messages"].push_back(messageObj);
-
-    jsonObj["max_tokens"] = 10;
-    jsonObj["temperature"] = 0;
-
-    auto chatResponse = openai::chat().create(jsonObj);
-    json data = json::parse(chatResponse.dump(2));
-
-    std::string similarityScoreStr = data["choices"][0]["message"]["content"].get<std::string>();
-    int similarity = std::stoi(similarityScoreStr);
-    if(similarity < 9) return false;
-    return true;
-}
-
-//player
-Player::Player() 
-{
-    score = 0;
-    violationCount = 0;
-};
-
-Player::~Player() {}
-
-const std::string& Player::getNickname() const {
-    return nickname;
-}
-
-int Player::getScore() const {
-    return score;
-}
-
-int Player::getViolationCount() const {
-    return violationCount;
-}
-
-void Player::incrementViolationCount() {
-    ++violationCount;
-    if(violationCount >= 3){
-        score -= 100;
-        std::cout << "\033[1;33m" << nickname << "\033[1;0m" << ", Your violation count is " << "\033[1;31m" << violationCount << "\033[1;0m" << ". You lose 100 points (╯°益°)╯彡" << std::endl;
-    }
-}
-
-void Player::addScore(int n){
-    score += n;
-}
-
 //system
 System::System()
 {
@@ -181,6 +53,7 @@ void System::make_question()
 
     json data = json::parse(chat1.dump(2));
     std::string ans = data["choices"][0]["message"]["content"].get<std::string>();
+    std::cout << ans << std::endl;
     
 //     std::string ans = R"(
 //         1. Category: History
