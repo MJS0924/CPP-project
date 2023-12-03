@@ -25,21 +25,11 @@ message("Using compiler ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 #     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # endif()
 
-set (SOURCES_EXAMPLES
-    main
+add_executable(main.out main.cc question.cc player.cc)
+set_property(TARGET main.out PROPERTY CXX_STANDARD 11)
+set_property(TARGET main.out PROPERTY CXX_STANDARD_REQUIRED ON)
+target_compile_options(main.out PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
-
-set (TARGETS_EXAMPLES
-    main
-)
-
-foreach( name ${TARGETS_EXAMPLES} )
-    add_executable(${name} ${name}.cc)
-    set_property(TARGET ${name} PROPERTY CXX_STANDARD 11)
-    set_property(TARGET ${name} PROPERTY CXX_STANDARD_REQUIRED ON)
-    target_compile_options(${name} PRIVATE
-        $<$<CXX_COMPILER_ID:MSVC>:/W4>
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
-    )
-    target_link_libraries(${name} ${CURL_LIBRARIES})
- endforeach()
+target_link_libraries(main.out ${CURL_LIBRARIES})
